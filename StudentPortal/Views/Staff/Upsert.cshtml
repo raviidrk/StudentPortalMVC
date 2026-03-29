@@ -1,0 +1,51 @@
+﻿@model StaffViewModel
+
+
+<div class="card shadow-sm" style="width: 100%; max-width: 420px;">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0">Staff form</h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Upsert" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-1">
+                <label class="form-label">Full Name</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-1">
+                <label class="form-label">User Name</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-1">
+                <label class="form-label">Phone Number</label>
+                <input type="number" asp-for="PhoneNumber" class="form-control" />
+            </div>
+
+            <div class="mb-1">
+                <label class="form-label">Password</label>
+              <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Role</label>
+                <select asp-for="Role" class="form-select">
+                    <option value="">Select role</option>
+                    <option>Admin</option>
+                    <option>Staff</option>                
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

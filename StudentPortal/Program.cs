@@ -1,12 +1,16 @@
+using StudentPortal.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-
-builder.Services.AddHttpClient();
-var app = builder.Build();
+builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddHttpClient("MyApi", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7060/api/"); // your API URL
+}); var app = builder.Build();
 app.UseSession();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
