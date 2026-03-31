@@ -5,7 +5,7 @@
 
     <h3 class="mb-3">Staff List</h3>
 
-    <a asp-action="Upsert" asp-route-id="0" class="btn btn-primary mb-3">
+    <a asp-action="AddStaff" asp-route-id="0" class="btn btn-primary mb-3">
         Create New
     </a>
     <table class="table table-bordered table-striped">
@@ -28,11 +28,12 @@
                     <tr>
                         <td>@user.Id</td>
                         <td>@user.FullName</td>
-                        <td>@user.UserName</td>
+                        
                         <td>@user.PhoneNumber</td>
+                        <td>@user.UserName</td>
                         <td>@user.Role</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="EditStaff" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Edit</a>
                             <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>

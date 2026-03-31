@@ -1,0 +1,118 @@
+﻿@using StudentPortal.DTO
+@model StaffResponseDto
+
+
+<div class="card shadow-sm" style="width: 100%; max-width: 420px;">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0">Staff form</h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="EditStaff" asp-controller="Staff" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-1">
+                <label class="form-label">Full Name</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-1">
+                <label class="form-label">User Name</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-1">
+                <label class="form-label">Phone Number</label>
+                <input type="number" asp-for="PhoneNumber" class="form-control" />
+            </div>
+
+            @* <div class="mb-1">
+                <label class="form-label">Password</label>
+              <input asp-for="Password" class="form-control" type="password" />
+               
+            </div> *@
+            
+            <div class="mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="updatePasswordCheck" />
+                    <label class="form-check-label" for="updatePasswordCheck">
+                        Update Password
+                    </label>
+                </div>
+            </div>
+
+            
+            <div class="mb-4" id="passwordField" style="display:none;">
+                <label class="form-label">New Password</label>
+                <input asp-for="Password" class="form-control" type="password"
+                       id="passwordInput" disabled />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+
+            <div class="mb-4">
+                <label class="form-label">Role</label>
+                <select asp-for="Role" class="form-select">
+                    <option value="">Select role</option>
+                    <option>Admin</option>
+                    <option>Staff</option>                
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-warning w-100">Update</button>
+                <a asp-action="Index" class="btn btn-secondary w-100">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+        const checkbox = document.getElementById('updatePasswordCheck');
+        const passwordField = document.getElementById('passwordField');
+        const passwordInput = document.getElementById('passwordInput');
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                // Show field, enable input, make it required
+                passwordField.style.display = 'block';
+                passwordInput.disabled = false;
+                passwordInput.required = true;
+                passwordInput.focus();
+            } else {
+                // Hide field, disable input, clear value
+                passwordField.style.display = 'none';
+                passwordInput.disabled = true;
+                passwordInput.required = false;
+                passwordInput.value = '';
+            }
+        });
+
+        // Prevent form submit if checkbox checked but password is empty
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (checkbox.checked && passwordInput.value.trim() === '') {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                passwordInput.focus();
+
+                // Show error if no validation span exists
+                let existing = passwordInput.parentElement.querySelector('.manual-error');
+                if (!existing) {
+                    const err = document.createElement('div');
+                    err.className = 'text-danger manual-error';
+                    err.innerText = 'Password is required.';
+                    passwordInput.parentElement.appendChild(err);
+                }
+            } else {
+                passwordInput.classList.remove('is-invalid');
+                const existing = passwordInput.parentElement.querySelector('.manual-error');
+                if (existing) existing.remove();
+            }
+        });
+    </script>
+}

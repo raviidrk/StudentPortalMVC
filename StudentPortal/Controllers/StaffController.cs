@@ -8,83 +8,75 @@ namespace StudentPortal.Controllers
     public class StaffController : Controller
     {
         private readonly IStaffService _service;
+
         public StaffController(IStaffService service)
         {
             _service = service;
         }
 
-      
-            public async Task<IActionResult> Index()
-            {
-                var data = await _service.GetAllAsync();
-                return View(data);
-            }
-
-            //  GET (Create/Edit)
-            [HttpGet]
-            public async Task<IActionResult> Upsert(int id)
-            {
-                if (id == 0)
-                    return View(new StaffViewModel());
-
-                var data = await _service.GetByIdAsync(id);
-
-                var vm = new StaffViewModel
-                {
-                    Id = data.Id,
-                    FullName = data.FullName,
-                    UserName = data.UserName,
-                    Role = data.Role,
-                    PhoneNumber = data.PhoneNumber
-                };
-
-                return View(vm);
-            }
-
-            //  POST (Create/Update)
-            [HttpPost]
-            public async Task<IActionResult> Upsert(StaffViewModel model)
-            {
-                if (!ModelState.IsValid)
-                    return View(model);
-
-                if (model.Id == 0)
-                {
-                    //  CREATE
-                    var dto = new StaffResponseDto
-                    {
-                        FullName = model.FullName,
-                        UserName = model.UserName,
-                        Password = model.Password,
-                        Role = model.Role,
-                        PhoneNumber = model.PhoneNumber
-                    };
-
-                    await _service.CreateAsync(dto);
-                }
-                else
-                {
-                    //  UPDATE
-                    var dto = new StaffResponseDto
-                    {
-                        Id = model.Id,
-                        FullName = model.FullName,
-                        Role = model.Role,
-                        PhoneNumber = model.PhoneNumber
-                    };
-
-                    await _service.UpdateAsync(model.Id, dto);
-                }
-
-                return RedirectToAction("Index");
-            }
-
-            // DELETE
-            public async Task<IActionResult> Delete(int id)
-            {
-                await _service.DeleteAsync(id);
-                return RedirectToAction("Index");
-            }
+        // GET: /Staff/Index
+        public async Task<IActionResult> Index()
+        {
+            var data = await _service.GetAllAsync();
+            return View(data);
         }
-    
+
+        // GET: /Staff/AddStaff
+        [HttpGet]
+        public IActionResult AddStaff()
+        {
+            return View(new StaffViewModel());
+        }
+
+        // POST: /Staff/AddStaff
+        [HttpPost]
+        public async Task<IActionResult> AddStaff(StaffViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var dto = new StaffResponseDto
+            {
+                FullName = model.FullName,
+                UserName = model.UserName,
+                Password = model.Password,
+                Role = model.Role,
+                PhoneNumber = model.PhoneNumber
+            };
+
+            await _service.CreateAsync(dto);
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Staff/EditStaff/5
+        [HttpGet]
+        public async Task<IActionResult> EditStaff(int id)
+        {
+            var data = await _service.GetByIdAsync(id);
+            if (data == null) return NotFound();
+
+            
+            return View(data);
+        }
+
+        // POST: /Staff/EditStaff
+        [HttpPost]
+        public async Task<IActionResult> EditStaff(StaffResponseDto model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+           
+
+            await _service.UpdateAsync(model.Id, model);
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Staff/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+    }
 }
