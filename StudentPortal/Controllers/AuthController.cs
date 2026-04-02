@@ -58,8 +58,21 @@ namespace StudentPortal.Controllers
             var result = JsonSerializer.Deserialize<LoginResponsecs>(responseContent,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            // 🔐 Store token (Session or Cookie)
-            HttpContext.Session.SetString("JWToken", result.AccessToken);
+            //  Store token (Session or Cookie)
+            Response.Cookies.Append("JWToken", result.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(30)
+            });
+
+            Response.Cookies.Append("JWToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
 
             return RedirectToAction("Index", "Home");
         }
