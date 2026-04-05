@@ -7,18 +7,19 @@ namespace StudentPortal.Controllers
 {
     public class StaffController : Controller
     {
-        private readonly IStaffService _service;
+        private readonly IStaffService _staffService;
 
-        public StaffController(IStaffService service)
+        public StaffController(IStaffService staffService)
         {
-            _service = service;
+            _staffService = staffService;
         }
 
         // GET: /Staff/Index
         public async Task<IActionResult> Index()
         {
-            var data = await _service.GetAllAsync();
-            return View(data);
+            var staffList = await _staffService.GetAllAsync();
+            return View(staffList);
+
         }
 
         // GET: /Staff/AddStaff
@@ -30,53 +31,82 @@ namespace StudentPortal.Controllers
 
         // POST: /Staff/AddStaff
         [HttpPost]
+        
         public async Task<IActionResult> AddStaff(StaffViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
-
-            var dto = new StaffResponseDto
+            try
             {
-                FullName = model.FullName,
-                UserName = model.UserName,
-                Password = model.Password,
-                Role = model.Role,
-                PhoneNumber = model.PhoneNumber
-            };
+                var dto = new StaffResponseDto
+                {
+                    FullName = model.FullName,
+                    UserName = model.UserName,
+                    Password = model.Password,
+                    Role = model.Role,
+                    PhoneNumber = model.PhoneNumber
+                };
 
-            await _service.CreateAsync(dto);
-            return RedirectToAction("Index");
+                await _staffService.CreateAsync(dto);   
+                TempData["Success"] = "Staff added successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong: {ex.Message}");
+                return View(model);
+            }
         }
 
         // GET: /Staff/EditStaff/5
         [HttpGet]
         public async Task<IActionResult> EditStaff(int id)
         {
-            var data = await _service.GetByIdAsync(id);
+
+            var data = await _staffService.GetByIdAsync(id);   
             if (data == null) return NotFound();
 
-            
             return View(data);
+
         }
 
         // POST: /Staff/EditStaff
         [HttpPost]
-        public async Task<IActionResult> EditStaff(StaffResponseDto model)
+        
+        public async Task<IActionResult> EditStaff(int id, StaffResponseDto model)
         {
             if (!ModelState.IsValid)
                 return View(model);
+            try
+            {
 
-           
-
-            await _service.UpdateAsync(model.Id, model);
-            return RedirectToAction("Index");
+                await _staffService.UpdateAsync(id, model);   
+                TempData["Success"] = "Staff updated successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong: {ex.Message}");
+                return View(model);
+            }
         }
 
-        // GET: /Staff/Delete/5
+       
+        [HttpPost]
+        
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAsync(id);
-            return RedirectToAction("Index");
+            try
+            {
+                await _staffService.DeleteAsync(id);   
+                TempData["Success"] = "Staff deleted successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Delete failed: {ex.Message}";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

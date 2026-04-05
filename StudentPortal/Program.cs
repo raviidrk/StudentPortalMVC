@@ -1,3 +1,4 @@
+using StudentPortal.Middleware;
 using StudentPortal.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+
+// Register ApiService and StaffService
+builder.Services.AddScoped<ApiService>();
+
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddHttpClient("MyApi", client =>
 {
@@ -21,11 +27,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<UnauthorizedRedirectMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

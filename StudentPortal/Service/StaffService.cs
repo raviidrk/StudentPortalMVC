@@ -6,45 +6,38 @@ namespace StudentPortal.Service
 {
     public class StaffService : IStaffService
     {
-        private readonly HttpClient _httpClient;
+        private readonly ApiService _apiService;
+        private const string Base = "staff";
 
-        public StaffService(IHttpClientFactory factory)
+        public StaffService(ApiService apiService)
         {
-            _httpClient = factory.CreateClient("MyApi");
+            _apiService = apiService;
         }
 
         public async Task<List<StaffResponseDto>> GetAllAsync()
         {
-            var response = await _httpClient.GetAsync("staff");
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<List<StaffResponseDto>>();
+            return await _apiService.GetAsync<List<StaffResponseDto>>(Base)
+                   ?? new List<StaffResponseDto>();
         }
 
         public async Task<StaffResponseDto> GetByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"staff/{id}");
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<StaffResponseDto>();
+            return await _apiService.GetAsync<StaffResponseDto>($"{Base}/{id}");
         }
 
-        public async Task CreateAsync(StaffResponseDto dto)
+        public async Task<StaffResponseDto?> CreateAsync(StaffResponseDto dto)
         {
-            var response = await _httpClient.PostAsJsonAsync("staff", dto);
-            response.EnsureSuccessStatusCode();
+            return await _apiService.PostAsync<StaffResponseDto>(Base, dto);
         }
 
-        public async Task UpdateAsync(int id, StaffResponseDto dto)
+        public async Task<StaffResponseDto?> UpdateAsync(int id, StaffResponseDto dto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"staff/{id}", dto);
-            response.EnsureSuccessStatusCode();
+            return await _apiService.PutAsync<StaffResponseDto>($"{Base}/{id}", dto);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"staff/{id}");
-            response.EnsureSuccessStatusCode();
+            return await _apiService.DeleteAsync($"{Base}/{id}");
         }
     }
 }

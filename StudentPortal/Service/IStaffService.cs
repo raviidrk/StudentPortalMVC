@@ -6,8 +6,8 @@ namespace StudentPortal.Service
     {
         Task<List<StaffResponseDto>> GetAllAsync();
         Task<StaffResponseDto> GetByIdAsync(int id);
-        Task CreateAsync(StaffResponseDto dto);
-        Task UpdateAsync(int id, StaffResponseDto dto);
-        Task DeleteAsync(int id);
+        Task<StaffResponseDto?> CreateAsync(StaffResponseDto dto);
+        Task<StaffResponseDto?> UpdateAsync(int id, StaffResponseDto dto);
+        Task<bool> DeleteAsync(int id);
     }
 }
