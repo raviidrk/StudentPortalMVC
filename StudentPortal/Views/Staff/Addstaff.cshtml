@@ -22,7 +22,9 @@
 
             <div class="mb-1">
                 <label class="form-label">Phone Number</label>
-                <input type="number" asp-for="PhoneNumber" class="form-control" />
+                <input type="text" asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
             </div>
 
             <div class="mb-1">
