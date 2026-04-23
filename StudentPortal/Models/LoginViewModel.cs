@@ -10,7 +10,7 @@ namespace StudentPortal.Models
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "Min 6 chars")]
+        //[StringLength(20, MinimumLength = 6, ErrorMessage = "Min 6 chars")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

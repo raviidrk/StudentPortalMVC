@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentPortal.DTO;
 using StudentPortal.Models;
 using StudentPortal.Service;
 
 namespace StudentPortal.Controllers
 {
+    [Authorize(Roles = "Admin,superadmin")]
     public class StaffController : Controller
     {
         private readonly IStaffService _staffService;

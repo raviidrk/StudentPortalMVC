@@ -22,17 +22,19 @@
 
         <tbody>
             @if (Model != null && Model.Any())
-            {
+            { 
+                var i = 0;
                 foreach (var user in Model)
                 {
+                    i++;
                     <tr>
-                        <td>@user.Id</td>
+                        <td>@i</td>
                         <td>@user.FullName</td>
                         
                         <td>@user.PhoneNumber</td>
                         <td>@user.UserName</td>
                         <td>@user.Role</td>
-                        <td>
+                        <td style="display: flex;gap: 10px;">
                             <a asp-action="EditStaff" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Edit</a>
                             <form asp-action="Delete"
                                   asp-controller="Staff"
